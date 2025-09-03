@@ -1,565 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shopify Checkout Modal</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div id="app">
-      <header class="at-header">
-        <h1>Shopify Store Demo</h1>
-        <button id="open-checkout" class="at-btn at-btn-primary">
-          Open Checkout Modal
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopify Checkout Modal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="app">
+    <header class="at-header">
+      <h1>Shopify Store Demo</h1>
+      <button id="open-checkout" class="at-btn at-btn-primary">
+        Open Checkout Modal
+      </button>
+    </header>
+
+    <main class="at-main">
+      <p>
+        Click the button above to open the checkout modal and test the flow.
+      </p>
+    </main>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="at-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="at-modal-backdrop"></div>
+    <div class="at-modal-content">
+      <!-- Modal Header -->
+      <div class="at-modal-header">
+        <div class="at-modal-logo">
+          <img src="https://thepannashop.com/cdn/shop/files/pannagiflogo.gif?v=1643112741&width=150"
+            alt="The Panna Shop" class="at-logo" />
+        </div>
+        <button id="close-modal" class="at-modal-close" aria-label="Close checkout">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
         </button>
-      </header>
+      </div>
 
-      <main class="at-main">
-        <p>
-          Click the button above to open the checkout modal and test the flow.
-        </p>
-      </main>
-    </div>
+      <!-- Progress Indicator -->
+      <div class="at-progress" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+        <div class="at-progress-step at-active" data-step="1">
+          <span class="at-step-number">1</span>
+          <span class="at-step-label">Phone Verification</span>
+        </div>
+        <div class="at-progress-line"></div>
+        <div class="at-progress-step" data-step="2">
+          <span class="at-step-number">2</span>
+          <span class="at-step-label">Verify OTP</span>
+        </div>
+        <div class="at-progress-line"></div>
+        <div class="at-progress-step" data-step="3">
+          <span class="at-step-number">3</span>
+          <span class="at-step-label">Address & Payment</span>
+        </div>
+      </div>
 
-    <!-- Checkout Modal -->
-    <div
-      id="checkout-modal"
-      class="at-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-      hidden
-    >
-      <div class="at-modal-backdrop"></div>
-      <div class="at-modal-content">
-        <!-- Modal Header -->
-        <header class="at-modal-header">
-          <div class="at-modal-logo">
-            <img
-              src="https://thepannashop.com/cdn/shop/files/pannagiflogo.gif?v=1643112741&width=150"
-              alt="The Panna Shop"
-              class="at-logo"
-            />
-          </div>
-          <button
-            id="close-modal"
-            class="at-modal-close"
-            aria-label="Close checkout"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M6 6L18 18M6 18L18 6"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </button>
-        </header>
+      <!-- Modal Body -->
+      <div class="at-modal-body">
+        <!-- Step 1: Phone Number -->
+        <div id="step-1" class="at-step at-active">
+          <div class="at-step-content">
+            <h2 class="at-step-title">Enter Your Phone Number</h2>
+            <p class="at-step-desc">We'll send you a verification code</p>
 
-        <!-- Progress Indicator -->
-        <div
-          class="at-progress"
-          role="progressbar"
-          aria-valuenow="1"
-          aria-valuemin="1"
-          aria-valuemax="3"
-        >
-          <div class="at-progress-step at-active" data-step="1">
-            <span class="at-step-number">1</span>
-            <span class="at-step-label">Phone Verification</span>
-          </div>
-          <div class="at-progress-line"></div>
-          <div class="at-progress-step" data-step="2">
-            <span class="at-step-number">2</span>
-            <span class="at-step-label">Verify OTP</span>
-          </div>
-          <div class="at-progress-line"></div>
-          <div class="at-progress-step" data-step="3">
-            <span class="at-step-number">3</span>
-            <span class="at-step-label">Address & Payment</span>
+            <form class="at-form" id="phone-form">
+              <div class="at-phone-group">
+                <div class="at-input-group at-input-group-prefix">
+                  <span class="at-input-prefix">+91</span>
+                  <input type="tel" id="phone-input" class="at-input" placeholder="Enter phone number" maxlength="10"
+                    inputmode="numeric" pattern="[0-9]{10}" required aria-describedby="phone-error" />
+                  <div id="phone-error" class="at-error" role="alert"></div>
+                </div>
+              </div>
+              <button type="submit" class="at-btn at-btn-primary at-btn-full" id="send-otp">
+                <span class="at-btn-text">Send OTP</span>
+                <div class="at-spinner" hidden></div>
+              </button>
+            </form>
           </div>
         </div>
 
-        <!-- Modal Body -->
-        <div class="at-modal-body">
-          <!-- Step 1: Phone Number -->
-          <div id="step-1" class="at-step at-active">
-            <div class="at-step-content">
-              <h2 class="at-step-title">Enter Your Phone Number</h2>
-              <p class="at-step-desc">We'll send you a verification code</p>
+        <!-- Step 2: OTP Verification -->
+        <div id="step-2" class="at-step">
+          <div class="at-step-content">
+            <h2 class="at-step-title">Enter Verification Code</h2>
+            <p class="at-step-desc">
+              Enter the 4-digit code sent to <span id="phone-display"></span>
+            </p>
 
-              <form class="at-form" id="phone-form">
-                <div class="at-phone-group">
-                  <div class="at-input-group at-input-group-prefix">
-                    <span class="at-input-prefix">+91</span>
-                    <input
-                      type="tel"
-                      id="phone-input"
-                      class="at-input"
-                      placeholder="Enter phone number"
-                      maxlength="10"
-                      inputmode="numeric"
-                      pattern="[0-9]{10}"
-                      required
-                      aria-describedby="phone-error"
-                    />
-                    <div id="phone-error" class="at-error" role="alert"></div>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  class="at-btn at-btn-primary at-btn-full"
-                  id="send-otp"
-                >
-                  <span class="at-btn-text">Send OTP</span>
+            <form class="at-form" id="otp-form">
+              <div class="at-otp-group">
+                <input type="text" class="at-otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" required />
+                <input type="text" class="at-otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" required />
+                <input type="text" class="at-otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" required />
+                <input type="text" class="at-otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" required />
+              </div>
+              <div id="otp-error" class="at-error" role="alert"></div>
+
+              <div class="at-otp-actions">
+                <button type="submit" class="at-btn at-btn-primary at-btn-full" id="verify-otp">
+                  <span class="at-btn-text">Verify OTP</span>
                   <div class="at-spinner" hidden></div>
                 </button>
-              </form>
-            </div>
-          </div>
-
-          <!-- Step 2: OTP Verification -->
-          <div id="step-2" class="at-step">
-            <div class="at-step-content">
-              <h2 class="at-step-title">Enter Verification Code</h2>
-              <p class="at-step-desc">
-                Enter the 4-digit code sent to <span id="phone-display"></span>
-              </p>
-
-              <form class="at-form" id="otp-form">
-                <div class="at-otp-group">
-                  <input
-                    type="text"
-                    class="at-otp-input"
-                    maxlength="1"
-                    inputmode="numeric"
-                    pattern="[0-9]"
-                    required
-                  />
-                  <input
-                    type="text"
-                    class="at-otp-input"
-                    maxlength="1"
-                    inputmode="numeric"
-                    pattern="[0-9]"
-                    required
-                  />
-                  <input
-                    type="text"
-                    class="at-otp-input"
-                    maxlength="1"
-                    inputmode="numeric"
-                    pattern="[0-9]"
-                    required
-                  />
-                  <input
-                    type="text"
-                    class="at-otp-input"
-                    maxlength="1"
-                    inputmode="numeric"
-                    pattern="[0-9]"
-                    required
-                  />
-                </div>
-                <div id="otp-error" class="at-error" role="alert"></div>
-
-                <div class="at-otp-actions">
-                  <button
-                    type="submit"
-                    class="at-btn at-btn-primary at-btn-full"
-                    id="verify-otp"
-                  >
-                    <span class="at-btn-text">Verify OTP</span>
-                    <div class="at-spinner" hidden></div>
-                  </button>
-                  <button
-                    type="button"
-                    class="at-btn at-btn-secondary at-btn-full"
-                    id="resend-otp"
-                    disabled
-                  >
-                    <span class="at-resend-text"
-                      >Resend OTP in <span id="resend-timer">30</span>s</span
-                    >
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <!-- Step 3: Checkout Details -->
-          <div id="step-3" class="at-step">
-            <div class="at-step-content">
-              <!-- Cart Section -->
-              <section class="at-section">
-                <h3 class="at-section-title">Order Summary</h3>
-                <div id="cart-items" class="at-cart-items"></div>
-                <div id="cart-empty" class="at-cart-empty" hidden>
-                  <p>Your cart is empty</p>
-                </div>
-                <div class="at-cart-total">
-                  <div class="at-total-row">
-                    <span>Subtotal</span>
-                    <span id="cart-subtotal">₹0.00</span>
-                  </div>
-                </div>
-              </section>
-
-              <!-- Address Section -->
-              <section class="at-section">
-                <div class="at-section-header">
-                  <h3 class="at-section-title">Delivery Address</h3>
-                  <button
-                    type="button"
-                    class="at-btn at-btn-text"
-                    id="add-address-btn"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 5V19M5 12H19"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                    Add New
-                  </button>
-                </div>
-
-                <div id="saved-addresses" class="at-address-list"></div>
-
-                <!-- Add New Address Form -->
-                <div id="add-address-form" class="at-address-form" hidden>
-                  <h4 class="at-form-title">Add New Address</h4>
-                  <form class="at-form">
-                    <div class="at-form-row">
-                      <div class="at-input-group">
-                        <input
-                          type="text"
-                          id="addr-name"
-                          class="at-input"
-                          placeholder="Full Name"
-                          required
-                        />
-                        <div class="at-error" role="alert"></div>
-                      </div>
-                      <div class="at-input-group">
-                        <input
-                          type="tel"
-                          id="addr-phone"
-                          class="at-input"
-                          placeholder="Phone"
-                          maxlength="10"
-                          inputmode="numeric"
-                          required
-                        />
-                        <div class="at-error" role="alert"></div>
-                      </div>
-                    </div>
-                    <div class="at-input-group">
-                      <input
-                        type="text"
-                        id="addr-address"
-                        class="at-input"
-                        placeholder="Address Line 1"
-                        required
-                      />
-                      <div class="at-error" role="alert"></div>
-                    </div>
-                    <div class="at-form-row">
-                      <div class="at-input-group">
-                        <input
-                          type="text"
-                          id="addr-pincode"
-                          class="at-input"
-                          placeholder="Pincode"
-                          maxlength="6"
-                          inputmode="numeric"
-                          required
-                        />
-                        <div class="at-error" role="alert"></div>
-                      </div>
-                      <div class="at-input-group">
-                        <input
-                          type="text"
-                          id="addr-city"
-                          class="at-input"
-                          placeholder="City"
-                          required
-                        />
-                        <div class="at-error" role="alert"></div>
-                      </div>
-                    </div>
-                    <div class="at-form-row">
-                      <div class="at-input-group">
-                        <input
-                          type="text"
-                          id="addr-state"
-                          class="at-input"
-                          placeholder="State"
-                          required
-                        />
-                        <div class="at-error" role="alert"></div>
-                      </div>
-                      <div class="at-input-group">
-                        <input
-                          type="text"
-                          id="addr-country"
-                          class="at-input"
-                          placeholder="Country"
-                          value="India"
-                          required
-                        />
-                        <div class="at-error" role="alert"></div>
-                      </div>
-                    </div>
-                    <div class="at-form-actions">
-                      <button
-                        type="button"
-                        class="at-btn at-btn-secondary"
-                        id="cancel-address"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        class="at-btn at-btn-primary"
-                        id="save-address"
-                      >
-                        Save Address
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </section>
-
-              <!-- Discount Section -->
-              <section class="at-section">
-                <h3 class="at-section-title">Discount Code</h3>
-                <form class="at-discount-form" id="discount-form">
-                  <div class="at-input-group">
-                    <input
-                      type="text"
-                      id="discount-input"
-                      class="at-input"
-                      placeholder="Enter discount code"
-                    />
-                    <button
-                      type="submit"
-                      class="at-btn at-btn-secondary"
-                      id="apply-discount"
-                    >
-                      <span class="at-btn-text">Apply</span>
-                      <div class="at-spinner" hidden></div>
-                    </button>
-                  </div>
-                  <div
-                    id="discount-message"
-                    class="at-message"
-                    role="alert"
-                    aria-live="polite"
-                  ></div>
-                </form>
-              </section>
-
-              <!-- Payment Section -->
-              <section class="at-section">
-                <h3 class="at-section-title">Payment Method</h3>
-                <div class="at-payment-options">
-                  <label class="at-payment-card">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="cod"
-                      class="at-payment-radio"
-                    />
-                    <div class="at-payment-content">
-                      <div class="at-payment-icon">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M2 8H22L20 21H4L2 8Z"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          />
-                          <path
-                            d="M10 14H14"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                          />
-                        </svg>
-                      </div>
-                      <div class="at-payment-details">
-                        <div class="at-payment-title">Cash on Delivery</div>
-                        <div class="at-payment-desc">Pay when you receive</div>
-                      </div>
-                    </div>
-                  </label>
-
-                  <label class="at-payment-card">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="upi"
-                      class="at-payment-radio"
-                    />
-                    <div class="at-payment-content">
-                      <div class="at-payment-icon">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <rect
-                            x="2"
-                            y="4"
-                            width="20"
-                            height="16"
-                            rx="3"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          />
-                          <path
-                            d="M8 12H16"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          />
-                        </svg>
-                      </div>
-                      <div class="at-payment-details">
-                        <div class="at-payment-title">UPI Payment</div>
-                        <div class="at-payment-desc">PhonePe, Google Pay</div>
-                      </div>
-                    </div>
-                  </label>
-
-                  <label class="at-payment-card">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="card"
-                      class="at-payment-radio"
-                    />
-                    <div class="at-payment-content">
-                      <div class="at-payment-icon">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <rect
-                            x="2"
-                            y="6"
-                            width="20"
-                            height="12"
-                            rx="2"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          />
-                          <path
-                            d="M2 10H22"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          />
-                        </svg>
-                      </div>
-                      <div class="at-payment-details">
-                        <div class="at-payment-title">Credit/Debit Card</div>
-                        <div class="at-payment-desc">
-                          Visa, Mastercard, etc.
-                        </div>
-                      </div>
-                    </div>
-                  </label>
-                </div>
-                <div id="payment-error" class="at-error" role="alert"></div>
-              </section>
-
-              <!-- Final Actions -->
-              <div class="at-modal-footer">
-                <button
-                  type="button"
-                  class="at-btn at-btn-primary at-btn-full"
-                  id="place-order"
-                  disabled
-                >
-                  <span class="at-btn-text">Place Order</span>
-                  <div class="at-spinner" hidden></div>
+                <button type="button" class="at-btn at-btn-secondary at-btn-full" id="resend-otp" disabled>
+                  <span class="at-resend-text">Resend OTP in <span id="resend-timer">30</span>s</span>
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Step 3: Checkout Details -->
+        <div id="step-3" class="at-step">
+          <div class="at-step-content">
+            <!-- Cart Section -->
+            <section class="at-section">
+              <h3 class="at-section-title">Order Summary</h3>
+              <div id="cart-items" class="at-cart-items"></div>
+              <div id="cart-empty" class="at-cart-empty" hidden>
+                <p>Your cart is empty</p>
+              </div>
+              <div class="at-cart-total">
+                <div class="at-total-row">
+                  <span>Subtotal</span>
+                  <span id="cart-subtotal">₹0.00</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Address Section -->
+            <section class="at-section">
+              <div class="at-section-header">
+                <h3 class="at-section-title">Delivery Address</h3>
+                <button type="button" class="at-btn at-btn-text" id="add-address-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                  Add New
+                </button>
+              </div>
+
+              <div id="saved-addresses" class="at-address-list"></div>
+
+              <!-- Add New Address Form -->
+              <div id="add-address-form" class="at-address-form" hidden>
+                <h4 class="at-form-title">Add New Address</h4>
+                <form class="at-form">
+                  <div class="at-form-row">
+                    <div class="at-input-group">
+                      <input type="text" id="addr-name" class="at-input" placeholder="Full Name" required />
+                      <div class="at-error" role="alert"></div>
+                    </div>
+                    <div class="at-input-group">
+                      <input type="tel" id="addr-phone" class="at-input" placeholder="Phone" maxlength="10"
+                        inputmode="numeric" required />
+                      <div class="at-error" role="alert"></div>
+                    </div>
+                  </div>
+                  <div class="at-input-group">
+                    <input type="text" id="addr-address" class="at-input" placeholder="Address Line 1" required />
+                    <div class="at-error" role="alert"></div>
+                  </div>
+                  <div class="at-form-row">
+                    <div class="at-input-group">
+                      <input type="text" id="addr-pincode" class="at-input" placeholder="Pincode" maxlength="6"
+                        inputmode="numeric" required />
+                      <div class="at-error" role="alert"></div>
+                    </div>
+                    <div class="at-input-group">
+                      <input type="text" id="addr-city" class="at-input" placeholder="City" required />
+                      <div class="at-error" role="alert"></div>
+                    </div>
+                  </div>
+                  <div class="at-form-row">
+                    <div class="at-input-group">
+                      <input type="text" id="addr-state" class="at-input" placeholder="State" required />
+                      <div class="at-error" role="alert"></div>
+                    </div>
+                    <div class="at-input-group">
+                      <input type="text" id="addr-country" class="at-input" placeholder="Country" value="India"
+                        required />
+                      <div class="at-error" role="alert"></div>
+                    </div>
+                  </div>
+                  <div class="at-form-actions">
+                    <button type="button" class="at-btn at-btn-secondary" id="cancel-address">
+                      Cancel
+                    </button>
+                    <button type="submit" class="at-btn at-btn-primary" id="save-address">
+                      Save Address
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </section>
+
+            <!-- Discount Section -->
+            <section class="at-section">
+              <h3 class="at-section-title">Discount Code</h3>
+              <form class="at-discount-form" id="discount-form">
+                <div class="at-input-group">
+                  <input type="text" id="discount-input" class="at-input" placeholder="Enter discount code" />
+                  <button type="submit" class="at-btn at-btn-secondary" id="apply-discount">
+                    <span class="at-btn-text">Apply</span>
+                    <div class="at-spinner" hidden></div>
+                  </button>
+                </div>
+                <div id="discount-message" class="at-message" role="alert" aria-live="polite"></div>
+              </form>
+            </section>
+
+            <!-- Payment Section -->
+            <section class="at-section">
+              <h3 class="at-section-title">Payment Method</h3>
+              <div class="at-payment-options">
+                <label class="at-payment-card">
+                  <input type="radio" name="payment" value="cod" class="at-payment-radio" />
+                  <div class="at-payment-content">
+                    <div class="at-payment-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M2 8H22L20 21H4L2 8Z" stroke="currentColor" stroke-width="2" />
+                        <path d="M10 14H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                      </svg>
+                    </div>
+                    <div class="at-payment-details">
+                      <div class="at-payment-title">Cash on Delivery</div>
+                      <div class="at-payment-desc">Pay when you receive</div>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="at-payment-card">
+                  <input type="radio" name="payment" value="upi" class="at-payment-radio" />
+                  <div class="at-payment-content">
+                    <div class="at-payment-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+                        <path d="M8 12H16" stroke="currentColor" stroke-width="2" />
+                      </svg>
+                    </div>
+                    <div class="at-payment-details">
+                      <div class="at-payment-title">UPI Payment</div>
+                      <div class="at-payment-desc">PhonePe, Google Pay</div>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="at-payment-card">
+                  <input type="radio" name="payment" value="card" class="at-payment-radio" />
+                  <div class="at-payment-content">
+                    <div class="at-payment-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+                        <path d="M2 10H22" stroke="currentColor" stroke-width="2" />
+                      </svg>
+                    </div>
+                    <div class="at-payment-details">
+                      <div class="at-payment-title">Credit/Debit Card</div>
+                      <div class="at-payment-desc">
+                        Visa, Mastercard, etc.
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div id="payment-error" class="at-error" role="alert"></div>
+            </section>
+
+            <!-- Final Actions -->
+            <div class="at-modal-footer">
+              <button type="button" class="at-btn at-btn-primary at-btn-full" id="place-order" disabled>
+                <span class="at-btn-text">Place Order</span>
+                <div class="at-spinner" hidden></div>
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Status Messages -->
-        <div
-          id="status-messages"
-          class="at-status"
-          role="alert"
-          aria-live="polite"
-        ></div>
+      <!-- Status Messages -->
+      <div id="status-messages" class="at-status" role="alert" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="at-modal-footer">
+    <div><a href="">T & C</a></div>
+    <div>
+      Powered by Kartlog
+    </div>
+    <div>
+      <img src="images/100-secure.jpg" alt="The Panna Shop" class="at-logo-secure" />
+    </div>
+  </div>
+
+  <!-- Address Card Template -->
+  <template id="address-card-template">
+    <label class="at-address-card">
+      <input type="radio" name="address" class="at-address-radio" />
+      <div class="at-address-content">
+        <div class="at-address-header">
+          <div class="at-address-name"></div>
+          <button type="button" class="at-address-edit" aria-label="Edit address">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M11 4H4C2.9 4 2 4.9 2 6V20C2 21.1 2.9 22 4 22H18C19.1 22 20 21.1 20 20V13" stroke="currentColor"
+                stroke-width="2" />
+              <path d="M18.5 2.5C19.9 1.1 22.1 1.1 23.5 2.5C24.9 3.9 24.9 6.1 23.5 7.5L13 18L8 19L9 14L18.5 2.5Z"
+                stroke="currentColor" stroke-width="2" />
+            </svg>
+          </button>
+        </div>
+        <div class="at-address-details">
+          <div class="at-address-line"></div>
+          <div class="at-address-location"></div>
+        </div>
+      </div>
+    </label>
+  </template>
+
+  <!-- Cart Item Template -->
+  <template id="cart-item-template">
+    <div class="at-cart-item">
+      <img class="at-item-image" alt="" />
+      <div class="at-item-details">
+        <div class="at-item-title"></div>
+        <div class="at-item-variant"></div>
+        <div class="at-item-meta">
+          <span class="at-item-qty">Qty: </span>
+          <span class="at-item-price"></span>
+        </div>
       </div>
     </div>
+  </template>
 
-    <!-- Address Card Template -->
-    <template id="address-card-template">
-      <label class="at-address-card">
-        <input type="radio" name="address" class="at-address-radio" />
-        <div class="at-address-content">
-          <div class="at-address-header">
-            <div class="at-address-name"></div>
-            <button
-              type="button"
-              class="at-address-edit"
-              aria-label="Edit address"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M11 4H4C2.9 4 2 4.9 2 6V20C2 21.1 2.9 22 4 22H18C19.1 22 20 21.1 20 20V13"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <path
-                  d="M18.5 2.5C19.9 1.1 22.1 1.1 23.5 2.5C24.9 3.9 24.9 6.1 23.5 7.5L13 18L8 19L9 14L18.5 2.5Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-            </button>
-          </div>
-          <div class="at-address-details">
-            <div class="at-address-line"></div>
-            <div class="at-address-location"></div>
-          </div>
-        </div>
-      </label>
-    </template>
+  <script src="app.js"></script>
+</body>
 
-    <!-- Cart Item Template -->
-    <template id="cart-item-template">
-      <div class="at-cart-item">
-        <img class="at-item-image" alt="" />
-        <div class="at-item-details">
-          <div class="at-item-title"></div>
-          <div class="at-item-variant"></div>
-          <div class="at-item-meta">
-            <span class="at-item-qty">Qty: </span>
-            <span class="at-item-price"></span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <script src="app.js"></script>
-  </body>
 </html>
